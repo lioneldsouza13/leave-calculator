@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors')
-
+require('dotenv/config')
 const node_client = require('./node-client.js')
 const saturday = require('./logic/saturdayCalculator')
 //const path = require('path')
@@ -100,7 +100,7 @@ app.post('/api/fetchAll',async (req,res)=>{
 })
 
 
-app.listen(3001,()=>{
-    console.log(`Listening on port 3001`)
+app.listen(process.env.PORT || 3001,()=>{
+    console.log(`Listening on port ${process.env.PORT}`)
 
 })
