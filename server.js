@@ -26,9 +26,13 @@ app.get('/api/store',(req,res)=>{
                 console.log(req.body)
                 for(let test of saturday.test(req.body))
                 {
-
+                    console.log(test)
+                    var data= {
+                        date:test[0],
+                        member:test[1]
+                }
                     userRef.push(
-                        test
+                        data
                     )
 
 
@@ -94,11 +98,51 @@ app.post('/api/fetchAll',async (req,res)=>{
         });
     })
 
-  //  console.log(data1[0])
+   //console.log(data1[0].date)
+
+
+
+
+
     res.status(200).send(data1);
 
 })
 
+
+
+app.post('/api/replace',async (req,res)=>{
+    let count=0
+   const refChild= node_client.ref.child('data')
+    const fun = await refChild.once('value',(data)=>{
+        var data1=data.val()
+        let keys = Object.keys(data1)
+      // console.log(keys)
+            for(var i=0;i<keys.length;i++)
+            {
+                var k=keys[i]
+                //console.log(k)
+                var date = data1[k].date
+                var member=data1[k].member
+
+                if(date==req.body.date && member!=req.body.member)
+                {
+                   // console.log(k)
+                 //   console.log(req.body.member + member)
+                 node_client.db.ref('/user/data/'+k).update({member:req.body.member})
+
+                count++
+                }
+
+
+                //console.log(date + " "+ member)
+            }
+
+    })
+    if(count==0)
+        res.send("Cannot Replace")
+    else
+        res.send('replacement done')
+})
 
 app.listen(process.env.PORT || 3001,()=>{
     console.log(`Listening on port ${process.env.PORT}`)
