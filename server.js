@@ -4,145 +4,108 @@ const cors = require('cors')
 require('dotenv/config')
 const node_client = require('./node-client.js')
 const saturday = require('./logic/saturdayCalculator')
-//const path = require('path')
+
 const app =express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.get('/api/store',(req,res)=>{
-   const userRef = node_client.ref.child('data');
 
 
+app.get('/api/store', (req, res) => {
+    const userRef = node_client.ref.child('data');
     userRef.once("value")
-        .then(function(snapshot) {
-            let a = snapshot.val();  // true
-            console.log(req.body)
-            if(a!==null)
-            {
-                res.send('child exist')
-                return
+        .then(function (snapshot) {
+            let fetchData = snapshot.val();  // true
+
+            if (fetchData !== null) {
+                res.send('Data already exist')
+
             }
             else {
-                console.log(req.body)
-                for(let test of saturday.test(req.body))
-                {
-                    console.log(test)
-                    var data= {
-                        date:test[0],
-                        member:test[1]
+
+                for (let data of saturday.test(req.body)) {
+                    let storeData = {date: data[0], member: data[1] }
+                    userRef.push(storeData)
                 }
-                    userRef.push(
-                        data
-                    )
-
-
-                }
-
-
-                res.send('Saved')
+                res.send('Data Saved in Database')
             }
-
-
         });
-
-
-
 })
 
-app.get('/api/delete',(req,res)=>{
-    userRef = node_client.ref.child('data');
+app.get('/api/delete', (req, res) => {
+    const userRef = node_client.ref.child('data');
     userRef.remove()
-    res.send('deleted')
+    res.send('Data Deleted from Database')
 })
 
 
-//
-// app.post('/api/test',(req,res)=>{
-//
-//     const userRef = node_client.ref.child('user '+req.body.id);
-//     userRef.set(
-//         {
-//
-//             name:req.body.name
-//         }
-//
-//     )
-//    res.status(200).send('worked');
-//
-// })
-
-
-// app.post('/api/fetch',async (req,res)=>{
-//   const test =await   node_client.ref.once('child_added',function (snapshot) {
-//     var data1=''
-//         snapshot.forEach(function(data) {
-//             console.log("The " + data.key + " dinosaur's score is " + data.val());
-//             data1=data1+data.val();
-//         });
-//
-//        res.status(200).send(data1);
-//     })
-// })
-
-app.post('/api/fetchAll',async (req,res)=>{
-    var data1=[];
-    const test = await node_client.ref.once('value',function (snapshot) {
-        snapshot.forEach(function(data) {
-            // console.log("The " + data.key + " name is " + data.val());
-            data.forEach((u)=>{
-
-
+app.post('/api/fetchAll', async (req, res) => {
+    var data1 = [];
+    const test = await node_client.ref.once('value', function (snapshot) {
+        snapshot.forEach(function (data) {
+            data.forEach((u) => {
                 data1.push(u.val());
             })
-
         });
     })
-
-   //console.log(data1[0].date)
-
-
-
-
-
     res.status(200).send(data1);
-
 })
 
 
 
 app.post('/api/replace',async (req,res)=>{
     let count=0
+    let changeDate=''
+    let changeMember=''
+    let changeKey=''
+    let changedDate=''
+    let changedMember=''
+    let changedKey=''
+
    const refChild= node_client.ref.child('data')
-    const fun = await refChild.once('value',(data)=>{
-        var data1=data.val()
+    const test = await refChild.once('value',(data)=>{
+        let data1=data.val()
         let keys = Object.keys(data1)
-      // console.log(keys)
-            for(var i=0;i<keys.length;i++)
+
+            for(let i=0;i<keys.length;i++)
             {
-                var k=keys[i]
-                //console.log(k)
-                var date = data1[k].date
-                var member=data1[k].member
+                let k=keys[i]
+                let date = data1[k].date
+                let member=data1[k].member
 
-                if(date==req.body.date && member!=req.body.member)
+                if(req.body.date1==req.body.date2)
+                    count++
+
+                if(date==req.body.date1)
                 {
-                   // console.log(k)
-                 //   console.log(req.body.member + member)
-                 node_client.db.ref('/user/data/'+k).update({member:req.body.member})
-
-                count++
+                    changeDate=date
+                    changeMember=member
+                    changeKey=k
+                    count++
                 }
 
-
-                //console.log(date + " "+ member)
+                if(date==req.body.date2)
+                {
+                    changedDate=date
+                    changedMember=member
+                    changedKey=k
+                    count++
+                }
             }
-
     })
-    if(count==0)
-        res.send("Cannot Replace")
-    else
+
+    if(count==2)
+    {
+        const swap = await node_client.db.ref('/user/data/' + changeKey).update({member: changedMember})
+        const swap1 = await node_client.db.ref('/user/data/' + changedKey).update({member: changeMember})
         res.send('replacement done')
-})
+    }
+
+    else
+        res.send("Cannot Replace")
+    })
+
+
 
 app.listen(process.env.PORT || 3001,()=>{
     console.log(`Listening on port ${process.env.PORT}`)
