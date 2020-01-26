@@ -4,7 +4,10 @@ const cors = require('cors')
 require('dotenv/config')
 const node_client = require('./node-client.js')
 const saturday = require('./logic/saturdayCalculator')
-
+const auth=require('./logic/auth')
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
+const passwordHashing = require('./logic/passwordHashing')
 const app =express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -105,6 +108,24 @@ app.post('/api/replace',async (req,res)=>{
         res.send("Cannot Replace")
     })
 
+
+app.get('/api/token', (req, res) => {
+    if (req.body.user === '' || req.body.password === '') {
+        res.status(400).send("Complete user information not provided")
+    }
+    else {
+        const token = jwt.sign({user: req.body.password, password: req.body.password}, process.env.JWTToken)
+        res.send(token)
+    }
+})
+
+app.post('/api/test', auth, async (req, res) => {
+
+    let pass = await passwordHashing(req.body.password, (data) => {
+        res.send(data)
+    })
+
+    })
 
 
 app.listen(process.env.PORT || 3001,()=>{
