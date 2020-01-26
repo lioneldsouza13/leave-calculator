@@ -6,7 +6,7 @@ const node_client = require('./node-client.js')
 const saturday = require('./logic/saturdayCalculator')
 const auth=require('./logic/auth')
 const jwt = require("jsonwebtoken")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const passwordHashing = require('./logic/passwordHashing')
 const app =express();
 app.use(bodyParser.json());
