@@ -20,7 +20,7 @@ app.get('/api/store', (req, res) => {
         .then(function (snapshot) {
             let fetchData = snapshot.val();  // true
 
-            if (fetchData == null) {
+            if (fetchData == 1) {
 
                 res.send('Data already exist')
 
