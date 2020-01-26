@@ -27,7 +27,7 @@ app.get('/api/store', (req, res) => {
             }
             else {
 
-                for (let data of saturday.test(req.body.date,req.body.day)) {
+                for (let data of saturday.test(req.body.members,req.body.day)) {
                     let storeData = {date: data[0], member: data[1] ,day:req.body.day }
                     userRef.push(storeData)
                 }
