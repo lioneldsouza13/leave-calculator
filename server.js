@@ -20,14 +20,15 @@ app.get('/api/store', (req, res) => {
         .then(function (snapshot) {
             let fetchData = snapshot.val();  // true
 
-            if (fetchData !== null) {
+            if (fetchData == null) {
+
                 res.send('Data already exist')
 
             }
             else {
 
-                for (let data of saturday.test(req.body)) {
-                    let storeData = {date: data[0], member: data[1] }
+                for (let data of saturday.test(req.body.date,req.body.day)) {
+                    let storeData = {date: data[0], member: data[1] ,day:req.body.day }
                     userRef.push(storeData)
                 }
                 res.send('Data Saved in Database')

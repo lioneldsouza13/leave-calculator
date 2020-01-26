@@ -1,10 +1,21 @@
 
- module.exports.test= function(names)
+ module.exports.test= function(names,day)
  {
      if(names==null || names.length===0) {
          names = ['1a', '2a', '3a', '4a', '5a', '6a'];
      }
      const months =['January','February','March','April','May','June','July','August','September','October','November','December']
+    const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+
+     for(let i=0;i<days.length;i++)
+     {
+         if(day===days[i])
+         {
+             day=i
+         }
+     }
+
+
 
 
      let assigned = new Map([])
@@ -24,7 +35,7 @@
          for (var i = 1; i <= getTot;i++) {    //looping through days in month
              var newDate = new Date(d.getFullYear(), k, i)
 
-             if (newDate.getDay() == 6) {   //if Saturday
+             if (newDate.getDay() === day) {   //if Saturday
 
 
                  var saturday=newDate.getDate() + ' ' + months[k] + ' ' + newDate.getFullYear()
