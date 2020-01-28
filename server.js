@@ -45,7 +45,7 @@ app.get('/api/store', (req, res) => {
 app.get('/api/delete/:day', (req, res) => {
 
 
-    const userRef = node_client.ref.child('data/'+req.params.test);
+    const userRef = node_client.ref.child('data/'+req.params.day);
     userRef.remove()
     res.send('Data Deleted from Database')
 })
