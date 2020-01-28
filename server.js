@@ -15,29 +15,37 @@ app.use(cors());
 
 
 app.get('/api/store', (req, res) => {
-    const userRef = node_client.ref.child('data');
+    const userRef = node_client.ref.child('data/'+req.body.day);
     userRef.once("value")
         .then(function (snapshot) {
             let fetchData = snapshot.val();  // true
 
-            if (fetchData == 1) {
+            if (fetchData !== null) {
 
                 res.send('Data already exist')
 
             }
             else {
-
-                for (let data of saturday.test(req.body.members,req.body.day)) {
-                    let storeData = {date: data[0], member: data[1] ,day:req.body.day }
-                    userRef.push(storeData)
+                if (req.body.day === null || req.body.day === undefined)  {
+                    res.send('Missing day parameter')
                 }
-                res.send('Data Saved in Database')
+                else {
+
+                    for (let data of saturday.test(req.body.members, req.body.day)) {
+
+                        let storeData = {date: data[0], member: data[1], day: req.body.day}
+                        userRef.push(storeData)
+                    }
+                    res.send('Data Saved in Database')
+                }
             }
         });
 })
 
-app.get('/api/delete', (req, res) => {
-    const userRef = node_client.ref.child('data');
+app.get('/api/delete/:day', (req, res) => {
+
+
+    const userRef = node_client.ref.child('data/'+req.params.test);
     userRef.remove()
     res.send('Data Deleted from Database')
 })
