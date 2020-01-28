@@ -56,7 +56,10 @@ app.post('/api/fetchAll', async (req, res) => {
     const test = await node_client.ref.once('value', function (snapshot) {
         snapshot.forEach(function (data) {
             data.forEach((u) => {
-                data1.push(u.val());
+                u.forEach((c)=>{
+                    data1.push(c.val());
+                })
+
             })
         });
     })
