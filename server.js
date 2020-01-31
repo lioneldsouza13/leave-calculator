@@ -77,9 +77,34 @@ app.post('/api/replace',async (req,res)=>{
     let changedMember=''
     let changedKey=''
 
-   const refChild= node_client.ref.child('data')
+    let date = new Date(req.body.date1)
+    let date1 = new Date(req.body.date2)
+    let day=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    let finalDay=day[date.getDay()];
+    let finalDay1=day[date1.getDay()];
+
+    if(finalDay !==finalDay1)
+    {
+        res.send('Cannot replace Other Dates')
+        return
+    }
+
+
+
+   const refChild= node_client.ref.child('data/'+finalDay)
+
+
+
     const test = await refChild.once('value',(data)=>{
         let data1=data.val()
+
+        if(data1==null)
+        {
+            count='Data does not exist'
+            return res.send('Data Does not exist ')
+
+        }
+
         let keys = Object.keys(data1)
 
             for(let i=0;i<keys.length;i++)
@@ -109,15 +134,23 @@ app.post('/api/replace',async (req,res)=>{
             }
     })
 
-    if(count==2)
+    if(count==='Data does not exist')
     {
-        const swap = await node_client.db.ref('/user/data/' + changeKey).update({member: changedMember})
-        const swap1 = await node_client.db.ref('/user/data/' + changedKey).update({member: changeMember})
-        res.send('replacement done')
+        return
     }
 
-    else
+
+    if(count==2)
+    {
+        const swap = await node_client.db.ref('/user/data/'+finalDay+'/' + changeKey).update({member: changedMember})
+        const swap1 = await node_client.db.ref('/user/data/'+finalDay+'/' + changedKey).update({member: changeMember})
+        res.send('Replacement done')
+    }
+
+    else {
+        console.log('test')
         res.send("Cannot Replace")
+    }
     })
 
 
