@@ -220,7 +220,7 @@ app.post('/api/test', auth, async (req, res) => {
 // })
 
 
-app.post('/api/test11',async (req,res)=>{
+app.post('/api/compOffCount',async (req,res)=>{
     const result =await compOffTest(req.body.day,req.body.member)
     let count=Object.values(result)
 
