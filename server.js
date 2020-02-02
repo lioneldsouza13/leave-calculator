@@ -182,7 +182,8 @@ app.post('/api/test', auth, async (req, res) => {
 
 
 // app.post('/api/holiday',(req,res)=>{
-//     let dataFetched=[]
+//     let dataFetched=[];
+//     let count=0
 //     const userRef = node_client.ref.child('data/'+req.body.day)
 //
 //     userRef.once('value',(snapshot)=>{
@@ -190,7 +191,7 @@ app.post('/api/test', auth, async (req, res) => {
 //         if(data1==null)
 //         {
 //             count++;
-//             return
+//             return res.send('Data Does not exist')
 //
 //         }
 //         const compOffCount=Object.values(compOffTest(req.body.day,req.body.member))
@@ -199,26 +200,35 @@ app.post('/api/test', auth, async (req, res) => {
 //         {
 //             let k=keys[i]
 //             let date = data1[k].date
-//             let member=data1[k].member
-//             let leaveUsed=data1[k].leaveUsed
+//             // let member=data1[k].member
+//             // let leaveUsed=data1[k].leaveUsed
 //
-//             if(compOffCount.length>0 )
+//             if(compOffCount.length>0 && date!==req.body.leaveDay)
 //             {
-//
+//                 node_client.db.ref('/user/data/'+req.body.day+'/' + k).update({leaveUsed: 'Yes '+req.body.leaveDay})
+//               const pushData= node_client.db.ref('/user/data/'+req.body.leaveDay)
+//                 pushData.push()
+//                 count=2
 //             }
 //         }
-//         const swap = node_client.db.ref('/user/data/'+req.body.day+'/' + k).update({member: changedMember,leaveUsed: changedLeaveUsed})
-//     })
-//
-//
-//     let promise = new Promise(function (resolve,reject) {
-//
-//
 //
 //     })
+//
+//     if(count===2)
+//     {
+//         return res.send('Holiday Confirmed')
+//     }
+//     else if(count===0)
+//     {
+//         return res.send('Error missing parameters')
+//     }
+//
+//
+//
+//
 //
 // })
-
+//
 
 app.post('/api/compOffCount',async (req,res)=>{
     const result =await compOffTest(req.body.day,req.body.member)
@@ -226,10 +236,36 @@ app.post('/api/compOffCount',async (req,res)=>{
 
         res.send("Number of Comp Off leaves left :- "+count.length)
 
-
     })
 
-
+app.post('/api/allMemberCompOff',async (req,res)=>{
+    let members=[];
+    let unique='';
+    let count1='';
+    const userRef = await node_client.ref.child('data/'+req.body.day)
+    userRef.once('value',async (snapshot)=>{
+        let data1 =snapshot.val();
+        if(data1==null)
+        {
+            count1='Data does not exist';
+            return res.send('Data Does not exist ')
+        }
+        let keys = Object.keys(data1);
+        for(let i=0;i<keys.length;i++) {
+            let k = keys[i];
+            members.push(data1[k].member)
+        }
+         unique = members.filter((item, i, ar) => ar.indexOf(item) === i);
+        let finalData =[];
+        for(let i=0;i<unique.length;i++)
+        {
+           let data= await compOffTest(req.body.day,unique[i]);
+            let count=Object.values(data);
+           finalData.push('Number of comp off of '+unique[i]+' is '+count.length)
+        }
+       return res.send(finalData)
+    })
+});
 
 
 

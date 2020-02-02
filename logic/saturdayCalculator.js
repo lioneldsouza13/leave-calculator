@@ -14,15 +14,7 @@
              day=i
          }
      }
-
-
-
-
      let assigned = new Map([])
-
-
-
-
      function daysInMonth(month, year) {
          return new Date(year, month, 0).getDate();
      }
@@ -36,11 +28,7 @@
              var newDate = new Date(d.getFullYear(), k, i)
 
              if (newDate.getDay() === day) {   //if Saturday
-
-
                  var saturday=newDate.getDate() + ' ' + months[k] + ' ' + newDate.getFullYear()
-
-
                  if(count===names.length)
                  {
 
@@ -56,26 +44,13 @@
                      count++
                  }
 
-
-
-
              }
 
-
          }
-
 
      }
 
 return assigned
-
-
-
-     // for(let amount of assigned )
-     // {
-     //     console.log(amount)
-     // }
-
 
  }
 
