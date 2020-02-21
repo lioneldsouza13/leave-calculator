@@ -1,13 +1,19 @@
 const node_client = require('./../node-client.js')
 module.exports = async function(day,member) {
     //console.log(day+" "+member)
+
+
     let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
     let today = new Date();
     let currDate = today.getDate() + ' ' + months[today.getMonth()] + ' ' + today.getFullYear();
 
     let dataFetched = [];
+
     let count = 0
+
+
+
     const userRef = node_client.ref.child('data/' + day)
 
     const test1 = await
