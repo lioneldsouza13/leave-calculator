@@ -20,14 +20,16 @@
      }
 
      let count=0;
+     let holiday =0
      for(var k=0;k<12;k++) {
          var d = new Date();
          var getTot = daysInMonth(k, d.getFullYear()); //Get total days in a month
 
+
          for (var i = 1; i <= getTot;i++) {    //looping through days in month
              var newDate = new Date(d.getFullYear(), k, i)
-
-             if (newDate.getDay() === day) {   //if Saturday
+             holiday=newDate.getDate()+""+newDate.getMonth()
+             if (newDate.getDay() === day && (holiday!=157 || holiday!=227)) {   //if Saturday
                  var saturday=newDate.getDate() + ' ' + months[k] + ' ' + newDate.getFullYear()
                  if(count===names.length)
                  {

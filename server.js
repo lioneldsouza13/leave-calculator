@@ -18,7 +18,7 @@
 
 
     app.get('/api/store', (req, res) => {
-        const userRef = node_client.ref.child('data/'+req.body.day);
+        const userRef = node_client.ref.child('data1/'+req.body.day);
         userRef.once("value")
             .then(function (snapshot) {
                 let fetchData = snapshot.val();  // true
@@ -69,8 +69,23 @@
         res.status(200).send(data1);
     })
 
+ 
+    app.get('/api/fetchAllNew', async (req, res) => {
+        var data1 = [];
+        const test = await node_client.ref2.once('value', function (snapshot) {
+            snapshot.forEach(function (data) {
+                data.forEach((u) => {
+                  
+                        data1.push(u.val());
+                   
 
-
+                })
+            });
+        })
+        res.status(200).send(data1);
+    })
+ 
+ 
     app.post('/api/replace',async (req,res)=>{
         let count=0
         let count1=''
