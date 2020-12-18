@@ -58,28 +58,41 @@
         var data1 = [];
         const test = await node_client.ref.once('value', function (snapshot) {
             snapshot.forEach(function (data) {
-                data.forEach((u) => {
-                    u.forEach((c)=>{
-                        data1.push(c.val());
-                    })
+              //   data.forEach((u) => {
+                //     u.forEach((c)=>{
+                        data1.push(data.val());
+                //     })
 
-                })
+                // })
             });
         })
+        const test1 = await node_client.ref2.once('value', function (snapshot) {
+            snapshot.forEach(function (data) {
+                // data.forEach((u) => {
+                  
+                        data1.push(data.val());
+                   
+
+                // })
+            });
+        })
+
+
         res.status(200).send(data1);
     })
 
  
     app.get('/api/fetchAllNew', async (req, res) => {
         var data1 = [];
+        
         const test = await node_client.ref2.once('value', function (snapshot) {
             snapshot.forEach(function (data) {
-                data.forEach((u) => {
+                // data.forEach((u) => {
                   
-                        data1.push(u.val());
+                        data1.push(data.val());
                    
 
-                })
+                // })
             });
         })
         res.status(200).send(data1);

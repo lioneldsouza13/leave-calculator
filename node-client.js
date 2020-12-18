@@ -20,8 +20,8 @@ firebase.initializeApp({
  */
 var db = firebase.database();
 
-var ref = db.ref("/user");  //Set the current directory you are working in
-var ref2 = db.ref("/Web2call")
+var ref = db.ref("/Web2call_2021/Saturday");  //Set the current directory you are working in
+var ref2 = db.ref("/Web2call_2021/Sunday")
 // ref.set(
 //     {
 //         id:20,
